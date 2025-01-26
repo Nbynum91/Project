@@ -16,6 +16,7 @@ def main():
     function_2()
 
 def function_1():
+    """tries to load saved game or create new save"""
     try:
         with open("saved_game.csv", "r") as saved_game:
             reader = csv.DictReader(saved_game)
@@ -110,14 +111,6 @@ def function_n():
         input_game_command = input("Input: ").lower()
         if input_game_command == "attack":
             goblin.attacked(player.damage)
-            player.attacked(goblin.damage)
-            if player.health <= 0:
-                with open("saved_game.csv", "r") as saved_game:
-                    reader = csv.DictReader(saved_game)
-                    for row in reader:
-                        print(f"{row["player name"]} has been slain by goblins!")
-                os.remove("saved_game.csv")
-                break
             if goblin.health <= 0:
                 with open('saved_game.csv') as saved_game:
                     reader = csv.DictReader(saved_game)
@@ -128,6 +121,16 @@ def function_n():
                         writer = csv.DictWriter(saved_game, fieldnames=["player name", "goblins slain"])
                         writer.writerow({"player name": "player name", "goblins slain": "goblins slain"})
                         writer.writerow({"player name": player_name,"goblins slain": new_goblins_slain})
+                print("Goblin is slain!")
+                break
+            player.attacked(goblin.damage)
+            if player.health <= 0:
+                with open("saved_game.csv", "r") as saved_game:
+                    reader = csv.DictReader(saved_game)
+                    for row in reader:
+                        print(f"{row["player name"]} has been slain by goblins!")
+                os.remove("saved_game.csv")
+                break
         elif input_game_command == "run":
             player.attacked(goblin.damage)
             if player.health > 0:
@@ -142,7 +145,7 @@ def function_n():
                     for row in reader:
                         print(f"{row["player name"]} has been slain by goblins while running away!")
                 os.remove("saved_game.csv")
-                
+
         elif input_game_command == "help":
             print("Type command in input as seen")
         else:
