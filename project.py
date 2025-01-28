@@ -4,6 +4,7 @@ from pyfiglet import Figlet
 import os
 import csv
 import sys
+import re
 
 figlet = Figlet()
 
@@ -12,8 +13,8 @@ def main():
     figlet.setFont(font="epic")
     msg = "Goblin Slayer"
     print(figlet.renderText(msg))
-    function_3()
     function_4()
+    function_5()
 
 def function_1(number):
     if 0 < number < 5:
@@ -32,7 +33,7 @@ def function_2(menu):
         while True:
             input_game_command = input("Input: ").lower()
             if input_game_command == "new game":
-                player_name = input("Player Name: ")
+                player_name = function_3()
                 with open("saved_game.csv", "w") as saved_game:
                     writer = csv.DictWriter(saved_game, fieldnames=["player name", "goblins slain"])
                     writer.writerow({"player name": "player name", "goblins slain": "goblins slain"})
@@ -50,7 +51,7 @@ def function_2(menu):
         while True:
             input_game_command = input("Input: ").lower()
             if input_game_command == "new game":
-                player_name = input("Player Name: ")
+                player_name = function_3()
                 with open("saved_game.csv", "w") as saved_game:
                     writer = csv.DictWriter(saved_game, fieldnames=["player name", "goblins slain"])
                     writer.writerow({"player name": "player name", "goblins slain": "goblins slain"})
@@ -96,8 +97,16 @@ def function_2(menu):
         else:
             print("InputError: Type command from menu into input as seen")
 
-
 def function_3():
+    while True:
+        player_name = input("Player Name: ").strip()
+        test = re.search(r"^[a-z ]{1,25}$", player_name, re.IGNORECASE)
+        if test:
+            return player_name
+        else:
+            print("InputError: Name must contain only letters, spaces and be between one and twenty-five charactes in length")
+
+def function_4():
     """tries to load saved game or create new save"""
     file_path = "saved_game.csv"
     if os.path.exists(file_path):
@@ -107,7 +116,7 @@ def function_3():
 
 
 
-def function_4():
+def function_5():
     """runs player decisions to enter combat or quit while displaying goblins slain"""
     player = Player()
     while True:
@@ -138,3 +147,6 @@ def function_n():
 
 if __name__ == "__main__":
     main()
+
+
+
