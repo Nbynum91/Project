@@ -1,9 +1,8 @@
-from goblin import Goblin
-from player import Player
+from character import Player, Goblin
 from tabulate import tabulate
 from pyfiglet import Figlet
-import csv
 import os
+import csv
 import sys
 
 figlet = Figlet()
@@ -31,7 +30,7 @@ def function_2(menu):
     """runs input system for menu"""
     if menu == 1:
         while True:
-            input_game_command = input(("Input: ").lower()).strip()
+            input_game_command = input("Input: ").lower()
             if input_game_command == "new game":
                 player_name = input("Player Name: ")
                 with open("saved_game.csv", "w") as saved_game:
@@ -49,7 +48,7 @@ def function_2(menu):
                 function_1(1)
     if menu == 2:
         while True:
-            input_game_command = input(("Input: ").lower()).strip()
+            input_game_command = input("Input: ").lower()
             if input_game_command == "new game":
                 player_name = input("Player Name: ")
                 with open("saved_game.csv", "w") as saved_game:
@@ -66,11 +65,11 @@ def function_2(menu):
                 sys.exit("Game Over")
             else:
                 print("InputError: Type command from menu into input as seen")
-                function_2(2)
+                function_1(2)
     if menu == 3:
         player = Player()
         while True:
-            input_game_command = input(("Input: ").lower()).strip()
+            input_game_command = input("Input: ").lower()
             if input_game_command == "fight":
                 function_n()
                 print(player)
@@ -85,7 +84,7 @@ def function_2(menu):
                 function_1(3)
 
     if menu == 4:
-        input_game_command = input(("Input: ").lower()).strip()
+        input_game_command = input("Input: ").lower()
         if input_game_command == "attack":
             return "attack"
         elif input_game_command == "run":
@@ -100,13 +99,12 @@ def function_2(menu):
 
 def function_3():
     """tries to load saved game or create new save"""
-    try:
-        with open("saved_game.csv", "r") as saved_game:
-            reader = csv.DictReader(saved_game)
-            function_2(function_1(2))
-
-    except:
+    file_path = "saved_game.csv"
+    if os.path.exists(file_path):
+        function_2(function_1(2))
+    else:
         function_2(function_1(1))
+
 
 
 def function_4():
@@ -122,50 +120,21 @@ def function_n():
     player = Player()
     goblin = Goblin()
     while goblin.health > 0 and player.health > 0:
-        with open("saved_game.csv", "r") as saved_game:
-            reader = csv.DictReader(saved_game)
-            for row in reader:
-                print(f"{row["player name"]} has {player.health} hp")
+        player.get_health()
         print(goblin)
         function_1(4)
         input_game_command = function_2(4)
         if input_game_command == "attack":
-            goblin.attacked(player.damage)
-            if goblin.health <= 0:
-                with open('saved_game.csv') as saved_game:
-                    reader = csv.DictReader(saved_game)
-                    for row in reader:
-                        player_name = row["player name"]
-                        new_goblins_slain = int(row["goblins slain"]) + 1
-                    with open("saved_game.csv", "w") as saved_game:
-                        writer = csv.DictWriter(saved_game, fieldnames=["player name", "goblins slain"])
-                        writer.writerow({"player name": "player name", "goblins slain": "goblins slain"})
-                        writer.writerow({"player name": player_name,"goblins slain": new_goblins_slain})
-                print("Goblin is slain!")
-                break
-            player.attacked(goblin.damage)
-            if player.health <= 0:
-                with open("saved_game.csv", "r") as saved_game:
-                    reader = csv.DictReader(saved_game)
-                    for row in reader:
-                        print(f"{row["player name"]} has been slain by goblins!")
-                os.remove("saved_game.csv")
-                sys.exit("Game over")
+            goblin.attacked(player.damage, player.health)
+            goblin.death()
+            player.attacked(goblin.damage, goblin.health)
+            player.death()
+
         elif input_game_command == "run":
-            player.attacked(goblin.damage)
-            if player.health > 0:
-                with open("saved_game.csv", "r") as saved_game:
-                    reader = csv.DictReader(saved_game)
-                    for row in reader:
-                        print(f"{row["player name"]} has run away!")
-                break
-            else:
-                with open("saved_game.csv", "r") as saved_game:
-                    reader = csv.DictReader(saved_game)
-                    for row in reader:
-                        print(f"{row["player name"]} has been slain by goblins while running away!")
-                os.remove("saved_game.csv")
-                sys.exit("Game Over")
+            player.attacked(goblin.damage, goblin.health)
+            player.run()
+            break
+
 
 if __name__ == "__main__":
     main()
