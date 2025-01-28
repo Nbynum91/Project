@@ -9,6 +9,7 @@ import re
 figlet = Figlet()
 
 def main():
+    """prints title and runs function_4 and function_5"""
     figlet.getFonts()
     figlet.setFont(font="epic")
     msg = "Goblin Slayer"
@@ -17,7 +18,8 @@ def main():
     function_5()
 
 def function_1(number):
-    if 0 < number < 5:
+
+    if 0 < int(number) < 5:
         with open("menu.csv", "r") as menu:
             reader = csv.reader(menu)
             for row in reader:
@@ -33,7 +35,7 @@ def function_2(menu):
         while True:
             input_game_command = input("Input: ").lower()
             if input_game_command == "new game":
-                player_name = function_3()
+                player_name = function_3(input("Player Name: ").strip())
                 with open("saved_game.csv", "w") as saved_game:
                     writer = csv.DictWriter(saved_game, fieldnames=["player name", "goblins slain"])
                     writer.writerow({"player name": "player name", "goblins slain": "goblins slain"})
@@ -51,7 +53,7 @@ def function_2(menu):
         while True:
             input_game_command = input("Input: ").lower()
             if input_game_command == "new game":
-                player_name = function_3()
+                player_name = function_3(input("Player Name: ").strip())
                 with open("saved_game.csv", "w") as saved_game:
                     writer = csv.DictWriter(saved_game, fieldnames=["player name", "goblins slain"])
                     writer.writerow({"player name": "player name", "goblins slain": "goblins slain"})
@@ -72,7 +74,7 @@ def function_2(menu):
         while True:
             input_game_command = input("Input: ").lower()
             if input_game_command == "fight":
-                function_n()
+                function_6()
                 print(player)
                 function_1(3)
             elif input_game_command == "help":
@@ -97,17 +99,18 @@ def function_2(menu):
         else:
             print("InputError: Type command from menu into input as seen")
 
-def function_3():
+def function_3(player_name):
+    """checks input from player_name to be acceptable format"""
     while True:
-        player_name = input("Player Name: ").strip()
         test = re.search(r"^[a-z ]{1,25}$", player_name, re.IGNORECASE)
         if test:
             return player_name
         else:
             print("InputError: Name must contain only letters, spaces and be between one and twenty-five charactes in length")
+            player_name = input("Player Name: ").strip()
 
 def function_4():
-    """tries to load saved game or create new save"""
+    """displays two different menu's depending on prior saved game"""
     file_path = "saved_game.csv"
     if os.path.exists(file_path):
         function_2(function_1(2))
@@ -124,7 +127,7 @@ def function_5():
         function_2(function_1(3))
 
 
-def function_n():
+def function_6():
     """runs combat between goblin and player"""
     player = Player()
     goblin = Goblin()
