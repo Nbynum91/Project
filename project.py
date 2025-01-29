@@ -18,86 +18,29 @@ def main():
     function_5()
 
 def function_1(number):
-
+    """displays menu system based on row number from csv"""
     if 0 < int(number) < 5:
         with open("menu.csv", "r") as menu:
             reader = csv.reader(menu)
             for row in reader:
                 if reader.line_num == number:
                     print(tabulate([row], tablefmt="double_grid"))
-        return number
+                    list = row
+        return list
     else:
         raise ValueError
 
-def function_2(menu):
-    """runs input system for menu"""
-    if menu == 1:
-        while True:
-            input_game_command = input("Input: ").lower()
-            if input_game_command == "new game":
-                player_name = function_3(input("Player Name: ").strip())
-                with open("saved_game.csv", "w") as saved_game:
-                    writer = csv.DictWriter(saved_game, fieldnames=["player name", "goblins slain"])
-                    writer.writerow({"player name": "player name", "goblins slain": "goblins slain"})
-                    writer.writerow({"player name": player_name, "goblins slain": "0"})
-                break
-            elif input_game_command == "help":
-                print("Type command from menu into input as seen")
-                function_1(1)
-            elif input_game_command == "quit":
-                sys.exit("Game Over")
-            else:
-                print("InputError: Type command from menu into input as seen")
-                function_1(1)
-    if menu == 2:
-        while True:
-            input_game_command = input("Input: ").lower()
-            if input_game_command == "new game":
-                player_name = function_3(input("Player Name: ").strip())
-                with open("saved_game.csv", "w") as saved_game:
-                    writer = csv.DictWriter(saved_game, fieldnames=["player name", "goblins slain"])
-                    writer.writerow({"player name": "player name", "goblins slain": "goblins slain"})
-                    writer.writerow({"player name": player_name, "goblins slain": "0"})
-                break
-            elif input_game_command == "continue":
-                break
-            elif input_game_command == "help":
-                print("Type command from menu into input as seen")
-                function_1(2)
-            elif input_game_command == "quit":
-                sys.exit("Game Over")
-            else:
-                print("InputError: Type command from menu into input as seen")
-                function_1(2)
-    if menu == 3:
-        player = Player()
-        while True:
-            input_game_command = input("Input: ").lower()
-            if input_game_command == "fight":
-                function_6()
-                print(player)
-                function_1(3)
-            elif input_game_command == "help":
-                print("Type command from menu into input as seen")
-                function_1(3)
-            elif input_game_command == "quit":
-                sys.exit("Game Over")
-            else:
-                print("InputError: Type command from menu into input as seen")
-                function_1(3)
-
-    if menu == 4:
-        input_game_command = input("Input: ").lower()
-        if input_game_command == "attack":
-            return "attack"
-        elif input_game_command == "run":
-            return "run"
-        elif input_game_command == "help":
-            print("Type command from menu into input as seen")
-        elif input_game_command == "quit":
-            sys.exit("Game over")
+def function_2(list, input_game_command):
+    """runs input system based on what menu is loaded"""
+    while True:
+        if input_game_command.title() not in list:
+            return "InputError: Type command from menu into input as seen"
+        elif input_game_command.title() == "Help":
+            return "Type command from menu into input as seen"
+        elif input_game_command.title() == "Quit":
+            sys.exit("Game Over")
         else:
-            print("InputError: Type command from menu into input as seen")
+            return input_game_command.capitalize()
 
 def function_3(player_name):
     """checks input from player_name to be acceptable format"""
@@ -110,46 +53,65 @@ def function_3(player_name):
             player_name = input("Player Name: ").strip()
 
 def function_4():
-    """displays two different menu's depending on prior saved game"""
+    """allows new game or continue from save based off saved_game.csv availability"""
     file_path = "saved_game.csv"
     if os.path.exists(file_path):
-        function_2(function_1(2))
+        while True:
+            input_game_command = function_2(function_1(2), input("input: "))
+            if input_game_command == "New game":
+                player_name = function_3(input("Player Name: ").strip())
+                with open("saved_game.csv", "w") as saved_game:
+                    writer = csv.DictWriter(saved_game, fieldnames=["player name", "goblins slain"])
+                    writer.writerow({"player name": "player name", "goblins slain": "goblins slain"})
+                    writer.writerow({"player name": player_name, "goblins slain": "0"})
+                break
+            elif input_game_command == "Continue":
+                break
+            else:
+                print(input_game_command)
     else:
-        function_2(function_1(1))
-
-
+        while True:
+            input_game_command = function_2(function_1(1), input("input: "))
+            if input_game_command == "New game":
+                player_name = function_3(input("Player Name: ").strip())
+                with open("saved_game.csv", "w") as saved_game:
+                    writer = csv.DictWriter(saved_game, fieldnames=["player name", "goblins slain"])
+                    writer.writerow({"player name": "player name", "goblins slain": "goblins slain"})
+                    writer.writerow({"player name": player_name, "goblins slain": "0"})
+                break
+            else:
+                print(input_game_command)
 
 def function_5():
-    """runs player decisions to enter combat or quit while displaying goblins slain"""
+    """runs player decisions to enter combat or quit while displaying goblins slain from object/class player"""
     player = Player()
     while True:
         print(player)
-        function_2(function_1(3))
-
+        input_game_command = function_2(function_1(3), input("input: "))
+        if input_game_command == "Fight":
+            function_6()
+        else:
+            print(input_game_command)
 
 def function_6():
-    """runs combat between goblin and player"""
+    """runs combat between goblin and player using their object/class"""
     player = Player()
     goblin = Goblin()
     while goblin.health > 0 and player.health > 0:
         player.get_health()
         print(goblin)
-        function_1(4)
-        input_game_command = function_2(4)
-        if input_game_command == "attack":
+        input_game_command = function_2(function_1(4), input("input: "))
+        if input_game_command == "Attack":
             goblin.attacked(player.damage, player.health)
             goblin.death()
             player.attacked(goblin.damage, goblin.health)
             player.death()
-
-        elif input_game_command == "run":
+        elif input_game_command == "Run":
             player.attacked(goblin.damage, goblin.health)
             player.run()
             break
-
+        else:
+            print(input_game_command)
 
 if __name__ == "__main__":
     main()
-
-
-
