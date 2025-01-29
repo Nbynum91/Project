@@ -49,7 +49,8 @@ def function_3(player_name):
         if test:
             return player_name
         else:
-            print("InputError: Name must contain only letters, spaces and be between one and twenty-five charactes in length")
+            table = [["InputError: Name must contain only letters, spaces and be between one and twenty-five charactes in length"]]
+            print(tabulate(table))
             player_name = input("Player Name: ").strip()
 
 def function_4():
@@ -68,7 +69,8 @@ def function_4():
             elif input_game_command == "Continue":
                 break
             else:
-                print(input_game_command)
+                table = [[input_game_command]]
+                print(tabulate(table))
     else:
         while True:
             input_game_command = function_2(function_1(1), input("input: "))
@@ -80,7 +82,8 @@ def function_4():
                     writer.writerow({"player name": player_name, "goblins slain": "0"})
                 break
             else:
-                print(input_game_command)
+                table = [[input_game_command]]
+                print(tabulate(table))
 
 def function_5():
     """runs player decisions to enter combat or quit while displaying goblins slain from object/class player"""
@@ -91,7 +94,8 @@ def function_5():
         if input_game_command == "Fight":
             function_6()
         else:
-            print(input_game_command)
+            table = [[input_game_command]]
+            print(tabulate(table))
 
 def function_6():
     """runs combat between goblin and player using their object/class"""
@@ -111,7 +115,8 @@ def function_6():
             player.run()
             break
         else:
-            print(input_game_command)
+            table = [[input_game_command]]
+            print(tabulate(table))
 
 if __name__ == "__main__":
     main()
