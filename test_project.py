@@ -55,10 +55,7 @@ def test_function_2():
         function_2(function_1(4), "quit")
         assert sample.type == SystemExit
         assert sample.value.code == 1
-
-
-
-
+        
 def test_function_3():
     """tests name format for Player Name to be entered into saved_game.csv"""
     assert function_3("BoB the Builder") == "BoB the Builder"
