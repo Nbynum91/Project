@@ -1,6 +1,6 @@
 # Goblin Slayer
 ### Video Demo:
-Example URL
+https://www.youtube.com/shorts/kZFs7bHdd14
 
 ### Description:
 Goblin Slayer is a text based, turn based game written in python where the user uses the terminal to interact with the game.
